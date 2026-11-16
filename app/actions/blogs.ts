@@ -9,7 +9,7 @@ export const createBlog = async (formData: FormData) => {
   const author = formData.get("author") as string
   const url = formData.get("url") as string
   const likes = Number(formData.get("likes"))
-  addBlog(title, author, url, likes)
+  await addBlog(title, author, url, likes)
 
   revalidatePath("/blogs")
   redirect("/blogs")
@@ -20,7 +20,7 @@ export const incrementLikes = async (formData: FormData) => {
   if (!Number.isInteger(id)) {
     throw new Error("Invalid blog ID")
   }
-  likeBlog(id)
+  await likeBlog(id)
 
   revalidatePath(`/blogs/${id}`)
   revalidatePath("/blogs")
