@@ -1,14 +1,22 @@
 import { eq, sql } from "drizzle-orm"
 import { db } from "../../db"
 import { blogs } from "../../db/schema"
-
+import { notFound } from "next/navigation"
 
 export const getBlogs = async () => {
   return db.select().from(blogs)
 }
 
 export const addBlog = async (title: string, author: string, url: string, likes: number) => {
-  await db.insert(blogs).values({ title, author, url, likes })
+  const user = await db.query.blogs.findFirst({
+    orderBy: sql`RANDOM()`,
+  })
+
+  if (!user) {
+    notFound()
+  }
+
+  await db.insert(blogs).values({ title, author, url, likes, userId: user.id })
 }
 
 export const getBlogById = async (id: number) => {
