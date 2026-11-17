@@ -6,7 +6,8 @@ export const instant = false
 
 const UserPage = async ({ params }: { params: Promise<{ username: string }> }) => {
   const { username } = await params
-  const user = await getUserWithBlogs(username)
+  const decodedUsername = decodeURIComponent(username)
+  const user = await getUserWithBlogs(decodedUsername)
 
   if (!user) {
     notFound()
