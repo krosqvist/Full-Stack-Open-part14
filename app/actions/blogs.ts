@@ -7,7 +7,8 @@ import { addBlog, likeBlog } from "../services/blogs"
 
 export const createBlog = async (
   prevState: {
-    error: string
+    error: string,
+    success?: boolean,
     values: {
       title: string
       author: string
@@ -28,19 +29,27 @@ export const createBlog = async (
   const values = { title, author, url }
 
   if (!title || title.length < 5) {
-    return { error: "Blog title must be at least 5 characters long", values }
+    return { error: "Blog title must be at least 5 characters long", success: false, values }
   }
   if (!author || author.length < 5) {
-    return { error: "Blog author must be at least 5 characters long", values }
+    return { error: "Blog author must be at least 5 characters long", success: false, values }
   }
   if (!url || url.length < 5) {
-    return { error: "Blog url must be at least 5 characters long", values }
+    return { error: "Blog url must be at least 5 characters long", success: false, values }
   }
 
   await addBlog(title, author, url, likes)
 
   revalidatePath("/blogs")
-  redirect("/blogs")
+  return {
+    error: "",
+    success: true,
+    values: {
+      title: "",
+      author: "",
+      url: "",
+    },
+  }
 }
 
 export const incrementLikes = async (formData: FormData) => {
